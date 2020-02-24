@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+# Molly Guard
+# Written by Mark Coccimiglio (C) 2020
+#   mark@coccimiglio.net
+
+
+__debug=1
+#__poweroff=$(find /usr/sbin /usr/bin -maxdepth 1 -name poweroff -print -quit -name poweroff )
+#__shutdown=$(find /usr/sbin /usr/bin -maxdepth 1 -name poweroff -print -quit -name shutdown )
+#  __reboot=$(find /usr/sbin /usr/bin -maxdepth 1 -name poweroff -print -quit -name reboot   )
+#    __halt=$(find /usr/sbin /usr/bin -maxdepth 1 -name poweroff -print -quit -name halt     )
+
+#if [[ "$0" == *"molly-guard" ]]; then
+#  __debug=1
+#fi
+
+(( $__debug )) && echo "Debug: $0"
+
+command=$(echo $0 | rev | cut -d/ -f1 | rev )
+
+(( $__debug )) && echo "command: ${command}"
+(( $__debug )) && echo "\$@ : $@"
+
+#(( $__debug )) && echo "Shell interactive \$- : $-"
+#if [[ $- != *i* ]]
+# then 
+#  echo "molly-guard: Do not call $command without explicite path non-interactively. (/usr/sbin/${command})"
+#  exit 1
+#fi
+
+case $command in
+  poweroff|shutdown|reboot|halt|molly-test )
+  (( $__debug )) && echo "Molly guard: ${command}"
+  read -p "To ${command} Enter system Hostname ($(hostname)):  " _hostName
+  echo  "_hostName : ${_hostName} "
+  echo "\$hostname : $(hostname) "
+  if [ "$_hostName" == "$(hostname)" ] 
+   then
+    (( $__debug )) && echo "Correct hostname entered : $HOSTNAME" 
+    echo "/usr/sbin/${command} $@ to execute in 15 seconds."
+    sleep 15
+    echo /usr/sbin/${command} $@
+    exit 1
+  fi 
+  echo "Hostnames don't match.  Maybe you are on the wrong system."
+  exit 0 
+  ;;
+
+  'molly-guard' )
+  echo "poweroff|shutdown|reboot|halt|molly-test|molly-guard <options>"
+  ;;
+
+  * )
+  echo "molly-guard: program unknown - ${command} "
+  ;;
+esac
+
