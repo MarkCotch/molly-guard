@@ -29,10 +29,16 @@ command=$(echo $0 | rev | cut -d/ -f1 | rev )
 #  exit 1
 #fi
 
+function die {
+  echo $@
+  exit 1
+}
+
+
 case $command in
   poweroff|shutdown|reboot|halt|molly-test )
   (( $__debug )) && echo "Molly guard: ${command}"
-  read -t 30 -p "To ${command} Enter system Hostname ($(hostname)):  " _hostName
+  read -t 30 -p "To ${command} enter system Hostname ($(hostname)):  " _hostName || die Timed out abort.
   echo
   (( $__debug )) && echo  "_hostName : ${_hostName} "
   (( $__debug )) && echo "\$hostname : $(hostname) "
@@ -42,10 +48,10 @@ case $command in
     echo "/usr/sbin/${command} $@ to execute in 15 seconds."
     sleep 15
     /usr/sbin/${command} $@
-    exit 1
+    exit 0
   fi 
   echo "Hostnames don't match.  Maybe you are on the wrong system."
-  exit 0 
+  exit 1 
   ;;
 
   'molly-guard' )
