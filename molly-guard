@@ -32,7 +32,8 @@ command=$(echo $0 | rev | cut -d/ -f1 | rev )
 case $command in
   poweroff|shutdown|reboot|halt|molly-test )
   (( $__debug )) && echo "Molly guard: ${command}"
-  read -p "To ${command} Enter system Hostname ($(hostname)):  " _hostName
+  read -t 30 -p "To ${command} Enter system Hostname ($(hostname)):  " _hostName
+  echo
   (( $__debug )) && echo  "_hostName : ${_hostName} "
   (( $__debug )) && echo "\$hostname : $(hostname) "
   if [ "$_hostName" == "$(hostname)" ] 
@@ -40,7 +41,7 @@ case $command in
     (( $__debug )) && echo "Correct hostname entered : $HOSTNAME" 
     echo "/usr/sbin/${command} $@ to execute in 15 seconds."
     sleep 15
-    /usr/sbin/${command} $@
+    echo /usr/sbin/${command} $@
     exit 1
   fi 
   echo "Hostnames don't match.  Maybe you are on the wrong system."
