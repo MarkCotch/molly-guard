@@ -5,7 +5,7 @@
 #   mark@coccimiglio.net
 
 
-__debug=1
+__debug=0
 #__poweroff=$(find /usr/sbin /usr/bin -maxdepth 1 -name poweroff -print -quit -name poweroff )
 #__shutdown=$(find /usr/sbin /usr/bin -maxdepth 1 -name poweroff -print -quit -name shutdown )
 #  __reboot=$(find /usr/sbin /usr/bin -maxdepth 1 -name poweroff -print -quit -name reboot   )
@@ -33,14 +33,14 @@ case $command in
   poweroff|shutdown|reboot|halt|molly-test )
   (( $__debug )) && echo "Molly guard: ${command}"
   read -p "To ${command} Enter system Hostname ($(hostname)):  " _hostName
-  echo  "_hostName : ${_hostName} "
-  echo "\$hostname : $(hostname) "
+  (( $__debug )) && echo  "_hostName : ${_hostName} "
+  (( $__debug )) && echo "\$hostname : $(hostname) "
   if [ "$_hostName" == "$(hostname)" ] 
    then
     (( $__debug )) && echo "Correct hostname entered : $HOSTNAME" 
     echo "/usr/sbin/${command} $@ to execute in 15 seconds."
     sleep 15
-    echo /usr/sbin/${command} $@
+    /usr/sbin/${command} $@
     exit 1
   fi 
   echo "Hostnames don't match.  Maybe you are on the wrong system."
