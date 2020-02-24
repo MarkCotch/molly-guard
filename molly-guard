@@ -41,7 +41,7 @@ case $command in
     (( $__debug )) && echo "Correct hostname entered : $HOSTNAME" 
     echo "/usr/sbin/${command} $@ to execute in 15 seconds."
     sleep 15
-    echo /usr/sbin/${command} $@
+    /usr/sbin/${command} $@
     exit 1
   fi 
   echo "Hostnames don't match.  Maybe you are on the wrong system."
