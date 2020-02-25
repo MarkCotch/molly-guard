@@ -19,3 +19,5 @@ install:
 uninstall: 
 	rm -vf /usr/local/bin/{molly-guard,molly-test,shutdown,halt,poweroff}
 
+
+
